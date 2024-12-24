@@ -1,0 +1,22 @@
+{
+  "commonMessage": {
+    "success": "Success",
+    "invalidRequest": "Invalid request, Please reload the page and try again.",
+    "serverError": "An unexpected error has occured. To solve the issue, contact the person responsible for your Server."
+  },
+  "authMessages": {
+    "signupSuccessfully": "User registred successfully!",
+    "loginSuccessfully": "Login successfully!",
+    "logoutSuccessfully": "Logout successfully!",
+    "emailVerified": "Email verified successfully!",
+    "userNotFoundWithEmail": "Email not registred!",
+    "otpSentsuccessfully": "OTP snt successfully!",
+    "passwordUpdatedSuccess": "Password updated successfully!",
+    "refreshTokenGenerated": "Access token generated!"
+  },
+  "userMessages": {
+    "profileGetSuccessfully": "Profile data featched successfully!",
+    "profileUpdated": "Profile updated successfully!",
+    "profileDeleted": "Profile deleted successfully!"
+  }
+}
