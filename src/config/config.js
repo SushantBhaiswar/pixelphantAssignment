@@ -9,8 +9,8 @@ dotenv.config({ path: path.join(__dirname, `../../${'.env'}`) });
 // validate env with given schema
 const envVarsSchema = Joi.object()
     .keys({
-        NODE_ENV: Joi.string().valid('assignment').required(),
-        PORT: Joi.number().default(3000),
+        NODE_ENV: Joi.string().required(),
+        PORT: Joi.number().default(4000),
         JWT_SECRET: Joi.string().required().description('JWT secret key'),
         JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
         JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('days after which refresh tokens expire'),
@@ -18,6 +18,7 @@ const envVarsSchema = Joi.object()
     })
     .unknown();
 
+    console.log(process.env.NODE_ENV)
 //load errors or environment variables 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 

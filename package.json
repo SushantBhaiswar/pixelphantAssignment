@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "assignment": "cross-env NODE_ENV=assignment nodemon src/index.js"
+    "assignment": "nodemon src/index.js"
   },
   "author": "sushant bhaiswar",
   "dependencies": {
