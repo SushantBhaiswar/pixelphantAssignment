@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const config = require('./config');
-const db = require('../db')
+//const db = require('../db')
 const { tokenTypes } = require('./enumValues');
 
 const jwtOptions = {
@@ -14,7 +14,7 @@ const jwtVerify = async (payload, done) => {
         if (payload.type !== tokenTypes.ACCESS) {
             throw new Error('Invalid token type');
         }
-        const user = await db.query('SELECT * FROM users WHERE id = ? AND isDeleted = ?', [payload?.userId, false])
+       // const user = await db.query('SELECT * FROM users WHERE id = ? AND isDeleted = ?', [payload?.userId, false])
         
         if (!user) {
             return done(null, false);

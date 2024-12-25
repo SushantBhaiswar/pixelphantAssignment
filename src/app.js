@@ -16,7 +16,6 @@ const utils = require('./utils/helper');
 const app = express();
 const multer = require('multer');
 
-
 app.set('trust proxy', true)
 // set security HTTP headers
 app.use(helmet());

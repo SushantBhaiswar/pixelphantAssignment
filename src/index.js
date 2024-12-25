@@ -1,49 +1,38 @@
-const express = require('express');
+const mongoose = require('mongoose');
 const app = require('./app');
-const { initDB } = require('./db');
-const User = require('./models/user.model');
-const Log = require('./models/log.model');
-const Token = require('./models/token.model');
-const OTP = require('./models/otp.model');
-const logger = require('./config/logger');
 const config = require('./config/config');
+const logger = require('./config/logger');
 
-(async () => {
-    try {
-        // Initialize database and tables
-        await initDB();
-        await User.init();
-        await Log.init();
-        await Token.init();
-        await OTP.init();
+let server;
+mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
+  logger.info(`Connected to MongoDB : ${config.env}`);
+  server = app.listen(config.port, () => {
+    logger.info(`Listening to port ${config.port}`);
+  });
+});
+const exitHandler = () => {
+  if (server) {
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+};
 
-        // Start the server
-        const server = app.listen(config.port, () => {
-            logger.info(`Assignment running on http://localhost:${config.port}`);
-        });
+const unexpectedErrorHandler = (error) => {
+  logger.error(error);
+  exitHandler();
+};
 
-        const exitHandler = () => {
-            if (server) {
-                server.close(() => {
-                    logger.info('Server closed');
-                    process.exit(1);
-                });
-            } else {
-                process.exit(1);
-            }
-        };
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', unexpectedErrorHandler);
 
-        process.on('uncaughtException', (error) => {
-            logger.error(error);
-            exitHandler();
-        });
-
-        process.on('SIGTERM', () => {
-            logger.info('SIGTERM received');
-            if (server) server.close();
-        });
-    } catch (err) {
-        console.error('Error during initialization:', err.message);
-        process.exit(1);
-    }
-})();
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
+  if (server) {
+    server.close();
+  }
+});
+module.exports = { mongoose }

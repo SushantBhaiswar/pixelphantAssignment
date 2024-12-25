@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const config = require('../config/config');
 const logger = require('../config/logger');
 const ApiError = require('../utils/apiError');
-const Log = require('../models/log.model');
+// const Log = require('../models/log.model');
 
 const errorConverter = (err, req, res, next) => {
     let error = err;
@@ -36,16 +36,16 @@ const errorHandler = async (err, req, res, next) => {
         req.socket.remoteAddress ||
         (req.connection.socket ? req.connection.socket.remoteAddress : null);
 
-    await Log.create({
-        uri: req.originalUrl,
-        headers: req.headers,
-        method: req.method,
-        body: req.body,
-        param: req.params,
-        ip_address: ip,
-        status: statusCode,
-        response: { err, message, stack: err.stack, code: statusCode, status: false },
-    });
+    // await Log.create({
+    //     uri: req.originalUrl,
+    //     headers: req.headers,
+    //     method: req.method,
+    //     body: req.body,
+    //     param: req.params,
+    //     ip_address: ip,
+    //     status: statusCode,
+    //     response: { err, message, stack: err.stack, code: statusCode, status: false },
+    // });
 
     if (statusCode == 500) response.message = 'Internal Server Error!'
     res.status(statusCode).send(response);
