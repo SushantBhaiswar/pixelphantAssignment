@@ -15,8 +15,7 @@
     "refreshTokenGenerated": "Access token generated!"
   },
   "userMessages": {
-    "profileGetSuccessfully": "Profile data featched successfully!",
-    "profileUpdated": "Profile updated successfully!",
-    "profileDeleted": "Profile deleted successfully!"
+    "usercreated": "User created successfully!",
+    "getuser": "User featched successfully!"
   }
 }

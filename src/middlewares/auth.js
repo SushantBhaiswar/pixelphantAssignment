@@ -5,7 +5,6 @@
 const passport = require('passport');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/apiError');
-const db = require('../db')
 
 
 const verifyCallback = (req, resolve, reject, requiredRights) => async (err, user, info) => {
@@ -14,16 +13,9 @@ const verifyCallback = (req, resolve, reject, requiredRights) => async (err, use
         if (err || info || !user) {
             return reject(new ApiError(httpStatus.UNAUTHORIZED, err || 'Please Authenticate'));
         }
-        console.log(user.isEmailVerified)
-        if (!user.isEmailVerified) {
-            return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Your email is not verified!'));
-        }
         if (requiredRights && typeof requiredRights == 'string' && requiredRights != user.role) {
             return reject(new ApiError(httpStatus.UNAUTHORIZED, 'You do not have permission to perform this action'));
         }
-        if (!req?.headers?.['device_id']) return reject(new ApiError(httpStatus.UNAUTHORIZED, 'device id is required'));
-        const userDevices = await db.query(` SELECT * FROM tokens WHERE device_id = ? AND user_id = ?`, [req?.headers?.['device_id'], user?.id])
-        if (userDevices.length == 0) return reject(new ApiError(httpStatus.UNAUTHORIZED, 'please authenticate'));
 
         // checking if multiple role have access
         if (requiredRights && Array.isArray(requiredRights) && requiredRights.length != 0) {

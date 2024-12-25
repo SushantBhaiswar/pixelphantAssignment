@@ -79,7 +79,6 @@ app.use(errorHandler);
  */
 app.response.sendJSONResponse = function ({ code, status = true, message, data, isShowMessage = true }) {
 
-  utils.logResponse({ req: this.req, data, message, status, statusCode: code });
   return this.status(code).json({ code, status, message, isShowMessage, data });
 };
 

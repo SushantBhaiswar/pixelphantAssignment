@@ -64,31 +64,9 @@ const getadminMessagess = (messageKey, lang = 'en') => {
 };
 
 
-const logResponse = async ({ req, data, message, status, statusCode = 200 }) => {
-
-  const ip =
-    req.headers['ip-address'] || req.headers['x-real-ip'] ||
-    req.socket.remoteAddress ||
-    req.connection.remoteAddress ||
-    (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
-    req.headers['x-forwarded-for']
-
-  await Log.create({
-    uri: req.originalUrl,
-    headers: req.headers,
-    method: req.method,
-    body: req.body,
-    param: req.params,
-    ip_address: ip,
-    status: statusCode,
-    response: { data, message, code: statusCode, status },
-  });
-};
-
 
 module.exports = {
   getuserMessagess,
   getadminMessagess,
   geterrorMessagess,
-  logResponse,
 };

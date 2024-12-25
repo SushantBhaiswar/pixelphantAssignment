@@ -1,23 +1,22 @@
 const Joi = require('joi');
 
 
-const updateProfile = {
+const createUser = {
     body: Joi.object().keys({
-        profileImage: Joi.string(),
-        firstName: Joi.string(),
-        lastName: Joi.string(),
-
+        userName: Joi.string().required(),
+        password: Joi.string().required().min(8),
+        email: Joi.string().required().email(),
     }),
 };
 
-const deleteProfile = {
+const getUser = {
     params: Joi.object().keys({
-        userId: Joi.string().required(),
+        userName: Joi.string().required(),
     }),
 };
 
 
 module.exports = {
-    updateProfile,
-    deleteProfile
+    createUser,
+    getUser
 }
