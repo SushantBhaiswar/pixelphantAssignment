@@ -6,7 +6,6 @@ const { USER } = require('../../models/index')
 
 const createUser = async (req) => {
     try {
-        console.log(req?.body)
         const { email, password, userName } = req?.body || {}
 
         if (await USER.isEmailTaken(email))
@@ -26,15 +25,7 @@ const createUser = async (req) => {
 
 const getUser = async (req) => {
     const { userName } = req?.body || {}
-
-    if (await USER.isEmailTaken(email))
-        throw new ApiError(httpStatus.BAD_REQUEST, utility.getErrMessages('authMessage.emailAlreadyExist'));
-
-    if (await USER.isUserNameTaken(userName))
-        throw new ApiError(httpStatus.BAD_REQUEST, utility.getErrMessages('authMessage.emailAlreadyExist'));
-
-
-    await USER.create({ email, password, userName })
+    const pipeline = []
 };
 
 module.exports = {

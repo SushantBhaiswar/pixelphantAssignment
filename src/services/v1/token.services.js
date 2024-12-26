@@ -2,10 +2,9 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const httpStatus = require('http-status');
 const config = require('../../config/config');
-const { Token } = require('../../models/index');
+const { TOKEN } = require('../../models/index');
 const ApiError = require('../../utils/apiError');
 const { tokenTypes } = require('../../config/enumValues');
-const db = require('../../db')
 /**
  * Generate token
  * @param {ObjectId} userId
@@ -30,22 +29,19 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
  * @param {ObjectId} userId
  * @param {Moment} expires
  * @param {string} type
- * @param {boolean} [blacklisted]
  * @returns {Promise<Token>}
  */
-const saveToken = async (token, userId, expires, type, device_id) => {
-    console.log(device_id)
-    const tokenQuery = `INSERT INTO tokens (token, user_id, expires, type, device_id) VALUES(?,?,?,?,?)`
-    await db.query(tokenQuery, [
+const saveToken = async (token, userId, expires, type) => {
+    console.log(token, userId, expires, type)
+    const tokenDoc = await TOKEN.create({
         token,
         userId,
-        expires.toDate(),
+        expires: expires.toDate(),
         type,
-        device_id
-    ]);
-    const row = await Token.findToken(userId)
-    return row;
+    });
+    return tokenDoc;
 };
+
 
 
 const verifyToken = (token, type) => {
@@ -61,7 +57,7 @@ const verifyToken = (token, type) => {
             } else {
                 // If verification is successful, proceed to find the token document
                 try {
-                    const tokenDoc = await db.query(`SELECT * FROM tokens WHERE user_id = ? AND token = ? VALUES(? , ?)`, [payload.userId, token])
+                    const tokenDoc = await TOKEN.findOne({ token, type, user: payload.sub, blacklisted: false });
                     if (!tokenDoc) {
                         reject(new ApiError(httpStatus.BAD_REQUEST, 'The password reset link has timed out. Please return to the login page and try resetting your password again to generate a new link'));
                     } else {
@@ -75,8 +71,8 @@ const verifyToken = (token, type) => {
     });
 };
 
-const generateAuthTokens = async (user, refreshTokenExpired, deviceId) => {
-
+const generateAuthTokens = async (user, refreshTokenExpired) => {
+    console.log(user, refreshTokenExpired)
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
     const accessToken = generateToken(user, accessTokenExpires, tokenTypes.ACCESS);
 
@@ -85,8 +81,9 @@ const generateAuthTokens = async (user, refreshTokenExpired, deviceId) => {
 
     // if refresh token is not expired then generate access token only
     if (refreshTokenExpired) {
+        console.log("tok")
         refreshToken = await generateToken(user, refreshTokenExpires, tokenTypes.REFRESH);
-        await saveToken(refreshToken, user, refreshTokenExpires, tokenTypes.REFRESH, deviceId);
+        await saveToken(refreshToken, user, refreshTokenExpires, tokenTypes.REFRESH);
     }
     return {
         access: {
@@ -100,22 +97,6 @@ const generateAuthTokens = async (user, refreshTokenExpired, deviceId) => {
     };
 };
 
-/**
- * Generate reset password token
- * @param {string} email
- * @returns {Promise<string>}
- */
-const generateResetPasswordToken = async (email) => {
-    const user = await userService.getUserByEmail(email);
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'No users found with this email');
-    }
-
-    const expires = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
-    const resetPasswordToken = generateToken(user._id, expires, tokenTypes.RESET_PASSWORD);
-    await saveToken(resetPasswordToken, user._id, expires, tokenTypes.RESET_PASSWORD);
-    return { resetPasswordToken, user, userDetails: user.userDetails, jobCategory: user?.userPrefrences?.jobCategory };
-};
 
 
 
@@ -124,5 +105,4 @@ module.exports = {
     saveToken,
     verifyToken,
     generateAuthTokens,
-    generateResetPasswordToken,
 };

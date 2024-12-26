@@ -59,6 +59,7 @@ userSchema.statics.isUserNameTaken = async function (userName) {
  * @returns {Promise<boolean>}
  */
 userSchema.methods.isPasswordMatch = async function (password) {
+  console.log(password)
   const user = this;
   return bcrypt.compare(password, user.password);
 };
