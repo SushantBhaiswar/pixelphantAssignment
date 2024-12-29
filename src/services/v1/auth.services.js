@@ -11,7 +11,6 @@ const loginUser = async (req) => {
     const { email, password } = req?.body;
 
     const userData = await USER.findOne({ email });
-    console.log(userData._id)
     if (!userData) throw new ApiError(httpStatus.NOT_FOUND, geterrorMessagess('authError.invalidLogin'))
 
     if (!await userData.isPasswordMatch(password)) throw new ApiError(httpStatus.NOT_FOUND, geterrorMessagess('authError.invalidPass'))
@@ -20,6 +19,7 @@ const loginUser = async (req) => {
     delete userData.password
     return { user: userData, tokens }
 };
+
 /**
  * Logout
  * @param {string} refreshToken

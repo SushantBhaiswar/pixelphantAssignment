@@ -14,7 +14,6 @@ const createUser = async (req) => {
         if (await USER.isUserNameTaken(userName))
             throw new ApiError(httpStatus.BAD_REQUEST, utility.geterrorMessagess('authError.usernameExist'));
 
-
         const createdUser = await USER.create({ email, password, userName })
         return createdUser
     } catch (error) {

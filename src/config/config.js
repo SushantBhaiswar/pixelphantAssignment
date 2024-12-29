@@ -19,7 +19,6 @@ const envVarsSchema = Joi.object()
     })
     .unknown();
 
-console.log(process.env.NODE_ENV)
 //load errors or environment variables 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 

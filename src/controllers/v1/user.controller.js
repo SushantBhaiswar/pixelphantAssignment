@@ -16,6 +16,7 @@ const createUser = catchAsync(async (req, res) => {
 
 const getUser = catchAsync(async (req, res) => {
     const response = await userServices.getUser(req);
+    console.log("🚀 ~ getUser ~ response:", response)
     res.sendJSONResponse({
         code: httpStatus.OK,
         status: true,

@@ -48,17 +48,15 @@ const verifyToken = (token, type) => {
         jwt.verify(token, config.jwt.secret, async (err, payload) => {
             if (err) {
                 // Handle JWT expiration or other errors
-                if (err.name === 'TokenExpiredError') {
-                    reject(new ApiError(httpStatus.BAD_REQUEST, 'The password reset link has timed out. Please return to the login page and try resetting your password again to generate a new link'));
-                } else {
-                    reject(new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token'));
-                }
+
+                reject(new ApiError(httpStatus.UNAUTHORIZED, 'Session Expired! Login again'));
+
             } else {
                 // If verification is successful, proceed to find the token document
                 try {
                     const tokenDoc = await TOKEN.findOne({ token, type, user: payload.sub, blacklisted: false });
                     if (!tokenDoc) {
-                        reject(new ApiError(httpStatus.BAD_REQUEST, 'The password reset link has timed out. Please return to the login page and try resetting your password again to generate a new link'));
+                        reject(new ApiError(httpStatus.BAD_REQUEST, 'Session Expired! Login again'));
                     } else {
                         resolve(tokenDoc);
                     }
@@ -75,7 +73,7 @@ const generateAuthTokens = async (user, refreshTokenExpired) => {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
     const accessToken = generateToken(user, accessTokenExpires, tokenTypes.ACCESS);
 
-    const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
+    const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'minutes');
     let refreshToken;
 
     // if refresh token is not expired then generate access token only
