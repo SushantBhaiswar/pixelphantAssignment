@@ -47,6 +47,7 @@ const logout = async (req) => {
  */
 const refreshAuth = async (req) => {
     const { refreshToken } = req?.body;
+    console.log("🚀 ~ refreshAuth ~ refreshToken:", refreshToken)
     try {
         const refreshTokenDoc = await tokenServices.verifyToken(refreshToken, tokenTypes.REFRESH);
         const genereated = new Date(refreshTokenDoc.expires) < new Date();
