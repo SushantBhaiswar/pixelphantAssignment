@@ -6,11 +6,11 @@ const { SERVICE } = require('../../models/index')
 
 const createService = async (req) => {
     try {
-        const { email, password, userName } = req?.body || {}
+        const { serviceName, serviceLink, monthlyFee } = req?.body || {}
 
 
-
-        const createdUser = await SERVICE.create({ email, password, userName })
+        const createdUser = await SERVICE.create({ serviceName, serviceLink, monthlyFee, userId: req.user._id })
+        console.log("🚀 ~ createService ~ createdUser:", createdUser)
         return createdUser
     } catch (error) {
         throw error

@@ -15,11 +15,12 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const getUser = catchAsync(async (req, res) => {
-    await userServices.getUser(req);
+    const response = await userServices.getUser(req);
     res.sendJSONResponse({
         code: httpStatus.OK,
         status: true,
         message: utility.getuserMessagess('userMessages.usercreated'),
+        data: { ...response }
     });
 
 });

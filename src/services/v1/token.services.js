@@ -32,7 +32,6 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
  * @returns {Promise<Token>}
  */
 const saveToken = async (token, userId, expires, type) => {
-    console.log(token, userId, expires, type)
     const tokenDoc = await TOKEN.create({
         token,
         userId,
@@ -81,7 +80,6 @@ const generateAuthTokens = async (user, refreshTokenExpired) => {
 
     // if refresh token is not expired then generate access token only
     if (refreshTokenExpired) {
-        console.log("tok")
         refreshToken = await generateToken(user, refreshTokenExpires, tokenTypes.REFRESH);
         await saveToken(refreshToken, user, refreshTokenExpires, tokenTypes.REFRESH);
     }

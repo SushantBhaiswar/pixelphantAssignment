@@ -8,6 +8,11 @@ const createUser = {
         email: Joi.string().required().email(),
     }),
 };
+const fetchUser = {
+    body: Joi.object().keys({
+        userName: Joi.string().required()
+    }),
+};
 
 const getUser = {
     params: Joi.object().keys({
@@ -18,5 +23,6 @@ const getUser = {
 
 module.exports = {
     createUser,
-    getUser
+    getUser,
+    fetchUser
 }

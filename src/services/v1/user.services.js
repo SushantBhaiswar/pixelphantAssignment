@@ -25,7 +25,29 @@ const createUser = async (req) => {
 
 const getUser = async (req) => {
     const { userName } = req?.body || {}
-    const pipeline = []
+    const pipeline = [
+        {
+            '$match': {
+                userName
+            }
+        }, {
+            '$lookup': {
+                'from': 'services',
+                'localField': '_id',
+                'foreignField': 'userId',
+                'as': 'services'
+            }
+        }, {
+            '$project': {
+                '_id': 1,
+                'userName': 1,
+                'email': 1,
+                'services': 1
+            }
+        }
+    ]
+    const response = await USER.aggregate(pipeline)
+    return response?.[0]
 };
 
 module.exports = {

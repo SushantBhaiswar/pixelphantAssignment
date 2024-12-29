@@ -16,6 +16,7 @@
   },
   "userMessages": {
     "usercreated": "User created successfully!",
+    "servicecreated": "Service created successfully!",
     "getuser": "User featched successfully!"
   }
 }

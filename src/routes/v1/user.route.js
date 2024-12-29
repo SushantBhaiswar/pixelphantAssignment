@@ -7,5 +7,6 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 router.post('/create', validate(userValidation.createUser), userController.createUser);
+router.post('/fetch', auth(), validate(userValidation.fetchUser), userController.getUser);
 
 module.exports = router;
