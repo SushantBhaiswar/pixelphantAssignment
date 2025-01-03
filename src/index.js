@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
-
+const rabbitmqManager = require('./rabbitmq/manager')
+const initializeExcQue = require('./rabbitmq/store')
 let server;
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
   logger.info(`Connected to MongoDB : ${config.env}`);
@@ -10,6 +11,17 @@ mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
     logger.info(`Listening to port ${config.port}`);
   });
 });
+
+// connecting to message queue
+rabbitmqManager.connect()
+  .then(() => {
+    initializeExcQue();
+    logger.info('Connected to RabbitMQ');
+  })
+  .catch((error) => {
+    logger.error(`RabbitMQ connection error: ${error.message}`);
+  });
+
 const exitHandler = () => {
   if (server) {
     server.close(() => {
